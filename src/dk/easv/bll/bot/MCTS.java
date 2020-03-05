@@ -26,41 +26,41 @@ public class MCTS implements IBot
 {
     private static final String BOTNAME = "MSTS";
     
-    private Random rand;
+    private Random r;
     private int opponent;
     private UCT uct;
     
     public MCTS()
     {
-        rand = new Random();
+        r = new Random();
         uct = new UCT();
     }
 
     @Override
     public IMove doMove(IGameState state) {
         
-        //Establishing for how long alghoritm should work
-        long endTime = System.currentTimeMillis() + 1000;
         
-        //Creating rootNode with current game state
+        long endTime = System.currentTimeMillis() + 100;
+        
+        
         Node rootNode = new Node(state);
         
-        //Sets opponent player number
+        
         opponent = (state.getMoveNumber()+1)%2;
         
         while(System.currentTimeMillis() < endTime)
         {
             
-            //Step 1 - selecting promising node
+            
             Node promisingNode = selectPromisingNode(rootNode);
             
-            //Step 2 - expanding node
+            
             if(!isGameOver(promisingNode.getState()))
             {
                 expandNode(promisingNode);
             }
             
-            //Step 3 - select node to explore
+            
             Node nodeToExplore = promisingNode;
             if(!nodeToExplore.getChildren().isEmpty())
             {
@@ -90,12 +90,12 @@ public class MCTS implements IBot
         for(IMove move : availableMoves)
         {
             
-            //creating child node with current state and connecting it to parent
+            
             Node childNode = new Node(promisingNode.getState());
             childNode.setParent(promisingNode);
             promisingNode.getChildren().add(childNode);
             
-            //performing move on child node state
+            
             performMove(childNode.getState(), move.getX(), move.getY());
         }
     }
@@ -114,24 +114,6 @@ public class MCTS implements IBot
             randomPlay(tempState);
         }
         return (tempState.getMoveNumber()+1)%2;  
-//        Node tempNode = new Node(nodeToExplore);
-//        IGameState tempState = tempNode.getState();
-//        while(!isGameOver(tempState))
-//        {
-//            randomPlay(tempState);
-//        }
-//        if(isWin(tempState) &&  (tempState.getMoveNumber()+1)%2 == opponent)
-//        {
-//            return 0;
-//        }
-//        else if(isWin(tempState) && (tempState.getMoveNumber()+1)%2 == (opponent+1)%2)
-//        {
-//            return 50;
-//        }
-//        else
-//        {
-//            return 15;
-//        } 
     }
     
     private void backPropagation(Node node, int value)
@@ -146,19 +128,13 @@ public class MCTS implements IBot
             }
             tempNode = tempNode.getParent();
         }
-//        Node tempNode = node;
-//        while(tempNode != null)
-//        {
-//            tempNode.incrementVisit();
-//            tempNode.addScore(value);
-//            tempNode = tempNode.getParent();
-//        }
+
     }
     
     private void randomPlay(IGameState state)
     {
         List<IMove> availableMoves = state.getField().getAvailableMoves();
-        IMove randomMove = availableMoves.get(rand.nextInt(availableMoves.size()));
+        IMove randomMove = availableMoves.get(r.nextInt(availableMoves.size()));
         performMove(state, randomMove.getX(), randomMove.getY());
     }
     
@@ -187,7 +163,6 @@ public class MCTS implements IBot
     private class Node {
         
         private Node parent;
-        
         private IGameState state;
         private int score;
         private int numberOfVisits;
@@ -196,10 +171,10 @@ public class MCTS implements IBot
         
         public Node(Node node)
         {
-            //copying game state
+            
             this(node.getState());
             
-            //connecting to parent
+            
             this.children = new ArrayList();
             if(node.getParent() != null)
             {
@@ -213,7 +188,7 @@ public class MCTS implements IBot
                 this.children.add(new Node(child));
             }
             
-            //setting score and numberOfVisits
+            
             score = node.getScore();
             numberOfVisits = node.getNumberOfVisits();
         }
@@ -221,7 +196,7 @@ public class MCTS implements IBot
         public Node(IGameState state)
         {
             this.state = new GameState();
-            // copy boards
+            
             String[][] board = new String[9][9];
             String[][] macroboard = new String[3][3];
             for(int i = 0; i < board.length; i++)
@@ -239,18 +214,18 @@ public class MCTS implements IBot
                 }
             }
             
-            //add boards
+            
             this.state.getField().setBoard(board);
             this.state.getField().setMacroboard(macroboard);
             
-            //copy move and round numbers
+            
             this.state.setMoveNumber(state.getMoveNumber());
             this.state.setRoundNumber(state.getRoundNumber());
             
-            //create empty children list
+            
             this.children = new ArrayList();
             
-            //sets score and numberOfVisits to default
+            
             this.score = 0;
             this.numberOfVisits = 0;
         }
@@ -269,7 +244,7 @@ public class MCTS implements IBot
         
         public Node getRandomChild()
         {
-            return children.get(rand.nextInt(children.size()));
+            return children.get(r.nextInt(children.size()));
         }
         
         public Node getParent()
