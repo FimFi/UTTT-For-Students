@@ -40,7 +40,7 @@ public class MCTS implements IBot
     public IMove doMove(IGameState state) {
         
         
-        long endTime = System.currentTimeMillis() + 100;
+        long endTime = System.currentTimeMillis() + 200;
         
         
         Node rootNode = new Node(state);
