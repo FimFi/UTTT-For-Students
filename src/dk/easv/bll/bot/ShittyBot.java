@@ -13,14 +13,14 @@ import dk.easv.bll.move.Move;
 
 /**
  *
- * @author Acer
+ * @author Den gode
  */
 public class ShittyBot implements IBot {
 
-    private static final String BOTNAME = "Meme bot";
+    private static final String BOTNAME = "Shitty bot";
     // Moves {row, col} in order of preferences. {0, 0} at top-left corner
     protected int[][] preferredMoves = {
-        {0, 0}, {0, 1}, {0, 2}, {1, 0}, {2, 0}, {2, 2}, {2, 1}, {1, 2},
+        {2, 0}, {0, 1}, {2, 2}, {1, 0}, {0, 0}, {1, 2}, {2, 1}, {0, 2},
         {1, 1} //Center
     };
 
